@@ -26,8 +26,8 @@ When the app is setup and all running, the MJPEG can be accessed using the follo
 The app also processes object detection using the Caffee Model, but this will be upgraded to use the Yolo dataset over time, for more accurate object detection. The object detection will only be processed, when it detects motion only.
 
 ## TODO
-[x] Stream over MJPEG
-[x] Process motion detection
-[] Use Yolo instead of Caffee for object detection
-[] Add options to limit what objects to focus on
-[] Add Facial Recognition
+* [x] Stream over MJPEG
+* [x] Process motion detection
+* [] Use Yolo instead of Caffee for object detection
+* [] Add options to limit what objects to focus on
+* [] Add Facial Recognition
