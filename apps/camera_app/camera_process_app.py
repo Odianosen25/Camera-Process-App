@@ -54,8 +54,7 @@ class CameraProcessApp(ad.ADBase):
             "object_model", f"{file_location}/MobileNetSSD_deploy.caffemodel"
         )
         self._camera_url = self.args.get("camera_url")
-        siteId = self.location.replace(" ", "_").lower()
-        self._topic = f"camera/{siteId}"
+        self._topic = f"camera/{self.location}"
 
         if self._camera_url == None:
             raise ValueError("Camera URL not provided")
