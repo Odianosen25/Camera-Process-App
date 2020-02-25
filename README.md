@@ -31,3 +31,4 @@ The app also processes object detection using the Caffee Model, but this will be
 * [] Use Yolo instead of Caffee for object detection
 * [] Add options to limit what objects to focus on
 * [] Add Facial Recognition
+* [] Add Object Tracking
