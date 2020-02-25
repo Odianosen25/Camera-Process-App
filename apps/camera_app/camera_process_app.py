@@ -24,7 +24,10 @@ class CameraProcessApp(ad.ADBase):
         self._video_processing = None
         self._video_capture = None
         self._image_data = None
+        self._last_motion_state = None
+        self._last_reported_time = self.adapi.get_now_ts()
         self.camera_fps = self.args.get("frames_per_second", 20)
+        self.location = self.args.get("location", self.name)
 
         # for motion detection
         self.motion_total_frame = 0
@@ -37,6 +40,7 @@ class CameraProcessApp(ad.ADBase):
         self.adbase.register_route(self.process_stream)
 
     def setup_video_capture(self, kwargs):
+        """This sets up the Video Capture instance"""
         file_location = os.path.dirname(os.path.abspath(__file__))
 
         # load caffee object detection classes
@@ -50,13 +54,11 @@ class CameraProcessApp(ad.ADBase):
             "object_model", f"{file_location}/MobileNetSSD_deploy.caffemodel"
         )
         self._camera_url = self.args.get("camera_url")
-        self._topic = self.args.get("state_topic")
+        siteId = self.location.replace(" ", "_").lower()
+        self._topic = f"camera/{siteId}"
 
         if self._camera_url == None:
             raise ValueError("Camera URL not provided")
-
-        elif self._topic == None:
-            raise ValueError("State Topic not provided")
 
         try:
             # setup caffee object net
@@ -92,7 +94,8 @@ class CameraProcessApp(ad.ADBase):
             self._camera_capturing = self.adapi.create_task(self.camera_capturing())
 
     async def camera_capturing(self):
-        self.adapi.log("Starting video processing and object detection")
+        """This processes the Video Capturing"""
+        self.adapi.log("Starting video processing and Motion Detection")
 
         while self._capturing:
             try:
@@ -176,18 +179,20 @@ class CameraProcessApp(ad.ADBase):
         (maxX, maxY) = (-np.inf, -np.inf)
 
         # if no contours were found, return None so no motion
-        if len(cnts) > 0:
+        if len(cnts) > 0 and self._last_motion_state != "on":
             # motion was detected
-            self.mqtt.mqtt_publish(self._topic, json.dumps({"motion_detcted": "on"}))
+            self.mqtt.mqtt_publish(self._topic, json.dumps({"motion_detected": "on"}))
+            self._last_motion_state = "on"
 
             if self.args.get("detect_objects") is True:
-                self.adapi.run_in(self.objects_detect, 0, image_data=image)
+                self.adapi.run_in(self.detect_objects, 0, image_data=image)
 
-        else:
+        elif self._last_motion_state != "off":
             # motion was not detected
-            self.mqtt.mqtt_publish(self._topic, json.dumps({"motion_detcted": "off"}))
+            self.mqtt.mqtt_publish(self._topic, json.dumps({"motion_detected": "off"}))
+            self._last_motion_state = "off"
 
-    def objects_detect(self, kwargs):
+    def detect_objects(self, kwargs):
         image_data = kwargs["image_data"]
         minimum_confidence = self.args.get("minimum_confidence", 0.4)
 
@@ -247,6 +252,7 @@ class CameraProcessApp(ad.ADBase):
         self.mqtt.mqtt_publish(self._topic, json.dumps(detected_objects))
 
     async def process_stream(self, request):
+        """This is for the Web Stream for the MJPEG"""
         stream = web.StreamResponse(
             status=200, reason="OK", headers={"Content-Type": "text/html"}
         )
@@ -300,7 +306,7 @@ class CameraProcessApp(ad.ADBase):
         return data
 
     async def terminate(self):
-        self.adapi.log("Stopping camera video capturing and detecting")
+        self.adapi.log("Stopping camera Video Capturing")
 
         if self._capturing is True:
             self._capturing = False
