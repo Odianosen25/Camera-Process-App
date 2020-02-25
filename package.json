@@ -1,0 +1,10 @@
+{
+  "name": "Camera-Process-App",
+  "version": "0.1",
+  "description": "AppDaemon Camera-Process-App to process RTSP video comeras for conversion to MJPEG stream, motion detection and object detection",
+  "main": "camera_process_app.py",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Odianosen25/Camera-Process-App.git"
+  }
+}
