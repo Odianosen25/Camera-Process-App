@@ -24,3 +24,10 @@ hallway_camera:
 When the app is setup and all running, the MJPEG can be accessed using the following url `http://ADIP:ADPORT/app/<camera_app_name>`. This app uses the internal port number of AD, so there is no need of making use of multiple ports on the PC its running. 
 
 The app also processes object detection using the Caffee Model, but this will be upgraded to use the Yolo dataset over time, for more accurate object detection. The object detection will only be processed, when it detects motion only.
+
+## TODO
+[x] Stream over MJPEG
+[x] Process motion detection
+[] Use Yolo instead of Caffee for object detection
+[] Add options to limit what objects to focus on
+[] Add Facial Recognition
