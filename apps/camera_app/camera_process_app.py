@@ -265,7 +265,7 @@ class CameraProcessApp(ad.ADBase):
             if request.transport.is_closing():
                 break
 
-            encodedImage = await self.adbase.run_in_executor(self.get_image_data)
+            encodedImage = await self.adapi.run_in_executor(self.get_image_data)
 
             if encodedImage is None:
                 break
@@ -274,7 +274,7 @@ class CameraProcessApp(ad.ADBase):
                 b"--frame\r\n"
                 b"Content-Type: image/jpeg\r\n\r\n" + encodedImage + b"\r\n"
             )
-            await self.adbase.sleep(0.1)
+            await self.adapi.sleep(0.1)
 
         await stream.write_eof()
         return stream
