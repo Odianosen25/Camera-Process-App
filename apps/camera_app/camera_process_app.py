@@ -38,7 +38,7 @@ class CameraProcessApp(ad.ADBase):
         self.adapi.run_in(self.setup_video_capture, 0)
 
         # register web app
-        self.adbase.register_route(self.process_stream)
+        self.adapi.register_route(self.process_stream)
 
     def setup_video_capture(self, kwargs):
         """This sets up the Video Capture instance"""
