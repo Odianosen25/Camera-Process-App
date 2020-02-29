@@ -32,6 +32,7 @@ class CameraProcessApp(ad.ADBase):
         # for motion detection
         self.motion_total_frame = 0
         self.motion_bg = None
+        self.motion_previous_frame = None
 
         # setup to be ran in a thread, to avoid holding up AD
         self.adapi.run_in(self.setup_video_capture, 0)
