@@ -1,7 +1,7 @@
 hallway_camera:
   module: camera_process_app
   class: CameraProcessApp
-  camera_url: rtsp://192.168.x.x
+  camera_url: rtsp://freja.hiof.no:1935/rtplive/definst/hessdalen03.stream
   height: 1080 # default 720
   width: 1920 # default 1280
   frames_per_second: 25 # default 20
