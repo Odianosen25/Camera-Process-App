@@ -1,6 +1,7 @@
 import adbase as ad
 import numpy as np
 import imutils
+from aiohttp import web
 import cv2
 import traceback
 import threading
@@ -26,6 +27,7 @@ class CameraProcessApp(ad.ADBase):
         self._image_data = None
         self._last_motion_state = None
         self._last_reported_time = self.adapi.get_now_ts()
+        self._detecting_objects = False
         self.camera_fps = self.args.get("frames_per_second", 20)
         self.location = self.args.get("location", self.name)
 
@@ -184,7 +186,8 @@ class CameraProcessApp(ad.ADBase):
             self.mqtt.mqtt_publish(self._topic, json.dumps({"motion_detected": "on"}))
             self._last_motion_state = "on"
 
-            if self.args.get("detect_objects") is True:
+            if self.args.get("detect_objects") is True and self._detecting_objects is False:
+                self._detecting_objects = True
                 self.adapi.run_in(self.detect_objects, 0, image_data=image)
 
         elif self._last_motion_state != "off":
@@ -250,6 +253,7 @@ class CameraProcessApp(ad.ADBase):
                     number += 1
 
         self.mqtt.mqtt_publish(self._topic, json.dumps(detected_objects))
+        self._detecting_objects = False
 
     async def process_stream(self, request):
         """This is for the Web Stream for the MJPEG"""
