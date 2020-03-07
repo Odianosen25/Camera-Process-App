@@ -29,7 +29,7 @@ The app also processes object detection using the Caffee Model, but this will be
 * [x] Stream over MJPEG
 * [x] Process motion detection
 * [x] Object detection using the opencv caffee model
-* [] Use Yolo instead of Caffee for object detection
-* [] Add options to limit what objects to focus on
-* [] Add Facial Recognition
-* [] Add Object Tracking
+* Use Yolo instead of Caffee for object detection
+* Add options to limit what objects to focus on
+* Add Facial Recognition
+* Add Object Tracking
